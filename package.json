@@ -1,0 +1,22 @@
+{
+  "name": "docs-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kurokodairu/docs-db.git"
+  },
+  "author": "Kurokodairu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kurokodairu/docs-db/issues"
+  },
+  "homepage": "https://github.com/Kurokodairu/docs-db#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
