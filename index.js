@@ -3,7 +3,7 @@ const app = express()
 const path = require("path");
 const fs = require('fs');
 
-const port = 3000;
+const port = 8080;
 
 const url = require("url");
 
@@ -19,7 +19,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
     if ((pathname)[pathname.length - 1] === '/') {
         pathname += 'index';
     }
-    res.render(pathname, purl.query, {page: 'pathname'});
+    res.render(pathname, purl.query);
 });
 
 
