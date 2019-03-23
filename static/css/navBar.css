@@ -1,0 +1,31 @@
+#navbar .pageName {
+	font-weight: bold;
+	font-size:26px;
+	padding-left:15px;
+	padding-top:8px;
+	padding-bottom:3px;
+}
+
+#navbar {
+	overflow: hidden;
+    background-color: #333;
+    position: sticky;
+    top: 0;
+	margin-bottom:50px;
+	font-size:18px;
+}
+
+#navbar a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 10px 15px;
+  text-decoration: none;
+}
+
+
+/* Right-aligned link */
+#navbar a.right {
+  float: right;
+}
