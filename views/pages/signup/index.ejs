@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<head>
+
+<% include ../../partials/include %>
+
+</head>
+
+<body>
+<% include ../../partials/navBar %>
+
+<h1>Create Account</h1>
+
+<form action="/api/user/">
+    <input type="text" name="name" required>
+    <input type="text" name="email" required>
+    <button type="submit"> Submit </button>
+</form>
+
+</body>

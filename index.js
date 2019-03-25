@@ -14,7 +14,11 @@ app.set('trust proxy', true);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
- app.get(/^(?!\/api\/)/, (req, res) => {
+
+// PAGES
+
+//Root page
+ app.get('/', (req, res) => {
     let purl = url.parse(req.url, true);
     let pathname = 'pages' + purl.pathname;
 
@@ -22,12 +26,44 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
         pathname += 'index';
     }
     res.render(pathname, purl.query);
+    console.log(purl.query);
 });
 
-app.get('/api/testing', (req, res) => {
-    res.status(200).send('Hello world!');
+//Users Page
+app.get('/users/:id', function (req, res) {
+    let id = req.params.id;
+
+    let info = JSON.parse(fs.readFileSync('./user/'+id+'.json', 'utf8'));
+
+    res.render('pages/users/index', {user: info});
 });
 
-// https://github.com/DevonCrawford/Personal-Website TEMPLATE
+app.get('/signup', function (req, res) {
+    res.render('pages/signup/index');
+});
 
-// J QUERY ??
+
+// API TESTING
+
+
+app.get('/api/user/:id', function (req, res) {
+    let id = req.params.id;
+
+    let info = JSON.parse(fs.readFileSync('./user/'+id+'.json', 'utf8'));
+
+    res.render('pages/users/index', {user: info});
+});
+
+
+
+app.get('/api/signup/:name&:email', function (req, res) {
+    let id = req.params.id;
+    if(fs.existsSync('./user/' + id +".json")) {
+        console.log("Exists");
+    } else {
+        console.log("Does not exist");
+        fs.writeFile('./user/' + id + ".json");
+
+    }
+    res.send("Hello");
+});
