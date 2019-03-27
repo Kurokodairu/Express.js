@@ -1,9 +1,10 @@
-const express = require('express')
-const app = express()
-const path = require("path");
-const fs = require('fs');
-var http = require('http')
-const port = 8081;
+const express = require('express');
+const app = express();
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+const port = 80;
 
 const url = require("url");
 
@@ -15,55 +16,123 @@ app.set('trust proxy', true);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
-// PAGES
+//connect to MongoDB
+mongoose.connect('mongodb://localhost/testForAuth');
+var db = mongoose.connection;
 
-//Root page
- app.get('/', (req, res) => {
-    let purl = url.parse(req.url, true);
-    let pathname = 'pages' + purl.pathname;
+//handle mongo error
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  // Connected.
+});
 
-    if ((pathname)[pathname.length - 1] === '/') {
-        pathname += 'index';
+//use sessions for tracking logins
+app.use(session({
+  secret: 'kurokodairu',
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db
+  })
+}));
+
+
+// ROUT TO Root
+app.get('/', function (req, res, next) {
+    res.render('pages/index.ejs');
+});
+
+app.get('/auth', function (req, res, next) {
+    res.render('pages/auth/index.ejs');
+});
+
+
+
+var User = require('./mongoDB/schema');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+
+//POST route for updating data
+app.post('/', function (req, res, next) {
+  // confirm that user typed same password twice
+  if (req.body.password !== req.body.passwordConf) {
+    var err = new Error('Passwords do not match.');
+    err.status = 400;
+    res.send("passwords dont match");
+    return next(err);
+  }
+
+  if (req.body.email &&
+    req.body.username &&
+    req.body.password &&
+    req.body.passwordConf) {
+
+    var userData = {
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password,
     }
-    res.render(pathname, purl.query);
-    console.log(purl.query);
+
+    User.create(userData, function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        req.session.userId = user._id;
+        return res.redirect('/profile');
+      }
+    });
+
+  } else if (req.body.logemail && req.body.logpassword) {
+    console.log("Login Method:")
+    User.authenticate(req.body.logemail, req.body.logpassword, function (error, user) {
+      if (error || !user) {
+        console.log("Wrong Email");
+        var err = new Error('Wrong email or password.');
+        err.status = 401;
+        return next(err);
+      } else {
+        console.log("Success, but crashing...");
+        req.session.userId = user._id;
+        return res.redirect('/profile');
+      }
+    });
+  } else {
+    var err = new Error('All fields required.');
+    err.status = 400;
+    return next(err);
+  }
+})
+
+// GET route after registering
+app.get('/profile', function (req, res, next) {
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        if (user === null) {
+          var err = new Error('Not authorized! Go back!');
+          err.status = 400;
+          return res.redirect('/');
+        } else {
+          return res.render('pages/profile/index.ejs', {user: user});
+        }
+      }
+    });
 });
 
-//Users Page
-app.get('/users/:id', function (req, res) {
-    let id = req.params.id;
-
-    let info = JSON.parse(fs.readFileSync('./user/'+id+'.json', 'utf8'));
-
-    res.render('pages/users/index', {user: info});
-});
-
-app.get('/signup', function (req, res) {
-    res.render('pages/signup/index');
-});
-
-
-// API TESTING
-
-
-app.get('/api/user/:id', function (req, res) {
-    let id = req.params.id;
-
-    let info = JSON.parse(fs.readFileSync('./user/'+id+'.json', 'utf8'));
-
-    res.render('pages/users/index', {user: info});
-});
-
-
-
-app.get('/api/signup/:name&:email', function (req, res) {
-    let id = req.params.id;
-    if(fs.existsSync('./user/' + id +".json")) {
-        console.log("Exists");
-    } else {
-        console.log("Does not exist");
-        fs.writeFile('./user/' + id + ".json");
-
-    }
-    res.send("Hello");
+// GET for logout
+app.get('/logout', function (req, res, next) {
+  if (req.session) {
+    // delete session object
+    req.session.destroy(function (err) {
+      if (err) {
+        return next(err);
+      } else {
+        return res.redirect('/');
+      }
+    });
+  }
 });
