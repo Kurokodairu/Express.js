@@ -3,29 +3,37 @@
 <head>
 
 <% include ../../partials/include %>
+<link type="text/css" rel="stylesheet" href="/css/auth.css">
 
 </head>
 
 <body>
 
-<div>
+<div id="container">
+    
+<div id="login">
 <form action="/" method="post">
     <input type="text" name="logemail" placeholder="E-mail" required="">
     <input type="password" name="logpassword" placeholder="Password" id="password" required="" >
-    <input type="submit" value="Login">
+    <br>
+    <input class="submit" type="submit" value="Login">
 </form>
 </div>
 
-<div>
+<br>
+
+<div id="signup">
 <form action="/" method="post">
-    <input type="text" name="email" placeholder="E-mail" required="">
-	<input type="text" name="username" placeholder="Username" required="">
+    <input type="email" name="email" placeholder="E-mail" required="">
+	<input type="text" name="username" placeholder="Username" maxlength="11" required="">
     <input type="password" name="password" placeholder="Password" id="password" required="" >
-	<input type="password" name="passwordConf" placeholder="Confirm Password" id="password_conf" required="">
-	<input type="submit" value="REGISTER">
+    <input type="password" name="passwordConf" placeholder="Confirm Password" id="password_conf" required="">
+    <br>
+	<input class="submit" type="submit" value="REGISTER">
 </form>
 </div>
 
+</div>
 
 
 </body>

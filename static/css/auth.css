@@ -1,0 +1,23 @@
+
+#container {
+    width: fit-content;
+    min-width: 350px;
+}
+
+#login {
+    width: 175px;
+    float: left;
+}
+
+#signup {
+    width: 175px;
+    float: right;
+}
+
+.submit {
+    margin-top:7px;
+}
+
+input {
+    margin: 3px;
+}

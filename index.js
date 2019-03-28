@@ -16,6 +16,9 @@ app.set('trust proxy', true);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
+// ----------------------------------------------------------------
+// ESTABLISH A CONNECTION TO THE MONGO DATABASE
+
 //connect to MongoDB
 mongoose.connect('mongodb://localhost/testForAuth');
 var db = mongoose.connection;
@@ -37,17 +40,33 @@ app.use(session({
 }));
 
 
+
+// ----------------------------------------------------------------
+// GET Routes for pages
+
+
 // ROUT TO Root
 app.get('/', function (req, res, next) {
     res.render('pages/index.ejs');
 });
 
 app.get('/auth', function (req, res, next) {
-    res.render('pages/auth/index.ejs');
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (user === null) {
+        res.render('pages/auth/index.ejs');
+      }
+      res.redirect('/');
+    });
 });
 
 
 
+// ----------------------------------------------------------------
+// AUTHENTICATION
+
+
+// Get the schema / template
 var User = require('./mongoDB/schema');
 
 app.use(bodyParser.json());
@@ -85,15 +104,12 @@ app.post('/', function (req, res, next) {
     });
 
   } else if (req.body.logemail && req.body.logpassword) {
-    console.log("Login Method:")
     User.authenticate(req.body.logemail, req.body.logpassword, function (error, user) {
       if (error || !user) {
-        console.log("Wrong Email");
         var err = new Error('Wrong email or password.');
         err.status = 401;
         return next(err);
       } else {
-        console.log("Success, but crashing...");
         req.session.userId = user._id;
         return res.redirect('/profile');
       }
@@ -105,7 +121,27 @@ app.post('/', function (req, res, next) {
   }
 })
 
-// GET route after registering
+// GET for logout
+app.get('/logout', function (req, res, next) {
+  if (req.session) {
+    // delete session object
+    req.session.destroy(function (err) {
+      if (err) {
+        return next(err);
+      } else {
+        return res.redirect('/');
+      }
+    });
+  }
+});
+
+
+
+// ----------------------------------------------------------------
+// PROFILE PAGES
+
+
+// GET route after registering - For personal profile
 app.get('/profile', function (req, res, next) {
   User.findById(req.session.userId)
     .exec(function (error, user) {
@@ -123,16 +159,20 @@ app.get('/profile', function (req, res, next) {
     });
 });
 
-// GET for logout
-app.get('/logout', function (req, res, next) {
-  if (req.session) {
-    // delete session object
-    req.session.destroy(function (err) {
-      if (err) {
-        return next(err);
-      } else {
-        return res.redirect('/');
-      }
-    });
-  }
+// GET Route for other profiles - With the id var
+app.get('/profile/:id', (req, res, next) => {
+
+  const userID = req.params.id;
+
+  User.findOne({username: userID})
+  .exec()
+  .then(doc => {
+      res.render('pages/profile/index.ejs', {
+          email: doc.email
+      });
+  })
+  .catch(err => {
+      console.log(err);
+  });
 });
+
