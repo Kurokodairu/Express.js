@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
-const port = 8080;
+const port = 3000;
 
 const url = require("url");
 
