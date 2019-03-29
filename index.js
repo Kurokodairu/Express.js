@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+require('dotenv').config();
 const port = 3000;
 
 const url = require("url");
@@ -20,7 +21,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 // ESTABLISH A CONNECTION TO THE MONGO DATABASE
 
 //connect to MongoDB
-mongoose.connect('mongodb+srv://admin:KfKNC9AEiQwPCW8s@cluster0-ppuvq.mongodb.net/test?retryWrites=true');
+mongoose.connect(process.env.mongoURL);
 var db = mongoose.connection;
 
 //handle mongo error

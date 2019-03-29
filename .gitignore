@@ -3,3 +3,5 @@
 *.git
 
 ngrok.exe
+
+.env
