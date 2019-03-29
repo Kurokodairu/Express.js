@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
-const port = 3000;
+const port = 8080;
 
 const url = require("url");
 
@@ -14,7 +14,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/static'));
 app.set('trust proxy', true);
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, '127.0.0.1', () => console.log(`Example app listening on port ${port}!`));
 
 
 // ----------------------------------------------------------------
