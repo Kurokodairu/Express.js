@@ -7,7 +7,6 @@ var MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
 const port = 3000;
 
-const url = require("url");
 
 // Using EJS as Template Files. https://ejs.co 
 app.set('view engine', 'ejs');
@@ -17,8 +16,10 @@ app.set('trust proxy', true);
 app.listen(port, '127.0.0.1', () => console.log(`Example app listening on port ${port}!`));
 
 
+
 // ----------------------------------------------------------------
 // ESTABLISH A CONNECTION TO THE MONGO DATABASE
+
 
 //connect to MongoDB
 mongoose.connect(process.env.mongoURL);
