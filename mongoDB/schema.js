@@ -17,11 +17,12 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  pictureURL: {
+    type: String,
+    required: false,
   }
 });
-
-
-// NEED TO HASH BEFORE COMPARING??
 
 
 //authenticate input against database

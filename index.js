@@ -20,7 +20,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 // ESTABLISH A CONNECTION TO THE MONGO DATABASE
 
 //connect to MongoDB
-mongoose.connect('SECRET');
+mongoose.connect('mongodb+srv://admin:KfKNC9AEiQwPCW8s@cluster0-ppuvq.mongodb.net/test?retryWrites=true');
 var db = mongoose.connection;
 
 //handle mongo error
