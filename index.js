@@ -47,7 +47,18 @@ app.use(session({
 
 // ROUT TO Root
 app.get('/', function (req, res, next) {
-    res.render('pages/index.ejs');
+  User.findById(req.session.userId)
+  .exec(function (error, user) {
+    if (error) {
+      return next(error);
+    } else {
+      if (user === null) {
+        return res.render('pages/index.ejs', {user: false});
+      } else {
+        return res.render('pages/index.ejs', {user: user});
+      }
+    }
+  });
 });
 
 app.get('/auth', function (req, res, next) {
@@ -55,8 +66,9 @@ app.get('/auth', function (req, res, next) {
     .exec(function (error, user) {
       if (user === null) {
         res.render('pages/auth/index.ejs');
+      } else {
+        res.redirect('/');
       }
-      res.redirect('/');
     });
 });
 
@@ -119,12 +131,11 @@ app.post('/', function (req, res, next) {
     err.status = 400;
     return next(err);
   }
-})
+});
 
 // GET for logout
 app.get('/logout', function (req, res, next) {
   if (req.session) {
-    // delete session object
     req.session.destroy(function (err) {
       if (err) {
         return next(err);
@@ -168,7 +179,7 @@ app.get('/profile/:id', (req, res, next) => {
   .exec()
   .then(doc => {
       res.render('pages/profile/index.ejs', {
-          email: doc.email
+          user: doc
       });
   })
   .catch(err => {

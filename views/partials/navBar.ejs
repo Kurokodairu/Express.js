@@ -2,5 +2,10 @@
 
 <div id="navbar">
 		<a class="pageName" href="#"> Kurokodairu </a>
-		<a class="right" href="/auth"> Login </a>
+		<% if (user === false) { %>
+			<a class="right" href="/auth"> Login </a>
+		<% } else { %>
+			<a href="#"><%= user.username %></a>
+			<a class="right" href="/logout"> Logout </a>
+		<% } %>
 	</div>
