@@ -3,12 +3,24 @@
 <head>
 
 <% include ../partials/include %>
-
+<link type="text/css" rel="stylesheet" href="/css/messages.css">
 </head>
 
+
 <body>
+
 <% include ../partials/navBar %>
 
-<p>Index</p>
+<ol id="stream">
+    <% for(var i=msgs.length-1; i >= 0; i--) { %>
+        <li class="item">
+            <div id="container">
+                <p class="sender">@<%= msgs[i].sender %></p>
+                <p class="content"><%= msgs[i].content %> <br>
+                <p class="Time"><%= msgs[i].time %></p>
+            <div>
+        </li>
+    <% } %>
+</ol>
 
 </body>

@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
+const moment = require('moment');
 const port = 3000;
 
 
@@ -22,7 +23,7 @@ app.listen(port, '127.0.0.1', () => console.log(`Example app listening on port $
 
 
 //connect to MongoDB
-mongoose.connect(process.env.mongoURL);
+mongoose.connect(process.env.mongoURL, {useCreateIndex: true, useNewUrlParser: true});
 var db = mongoose.connection;
 
 //handle mongo error
@@ -55,9 +56,13 @@ app.get('/', function (req, res, next) {
       return next(error);
     } else {
       if (user === null) {
-        return res.render('pages/index.ejs', {user: false});
+        msg.find({}, function(err, x) {
+        return res.render('pages/index.ejs', {user: false, msgs: x});
+        });
       } else {
-        return res.render('pages/index.ejs', {user: user});
+        msg.find({}, function(err, x) {
+        res.render('pages/index.ejs', {user: user, msgs: x});
+        });
       }
     }
   });
@@ -72,6 +77,21 @@ app.get('/auth', function (req, res, next) {
         res.redirect('/');
       }
     });
+});
+
+app.get('/Post', function (req, res, next) {
+  User.findById(req.session.userId)
+  .exec(function (error, user) {
+    if (error) {
+      return next(error);
+    } else {
+      if (user === null) {
+        return res.redirect('/');
+      } else {
+        res.render('pages/Messages/send.ejs');
+      }
+    }
+  });
 });
 
 
@@ -106,6 +126,7 @@ app.post('/', function (req, res, next) {
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
+      pictureURL: req.body.picture || null,
     }
 
     User.create(userData, function (error, user) {
@@ -187,5 +208,49 @@ app.get('/profile/:id', (req, res, next) => {
   .catch(err => {
       console.log(err);
   });
+});
+
+
+
+// ----------------------------------------------------------------
+// Post Msg
+
+
+var msg = require('./mongoDB/msgSchema');
+
+app.post('/Post', function (req, res, next) {
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        if (user === null) {
+          //Not logged in
+          var err = new Error('Not authorized! Go back!');
+          err.status = 400;
+          return res.redirect('/');
+        } else {
+          // Logged in
+          if(req.body.content) {
+
+          var msgData = {
+            sender: user.username,
+            content: req.body.content,
+            time: moment().format('MMMM Do YYYY, h:mm:ss a'),
+          }
+      
+          msg.create(msgData, function (error, msg) {
+            if (error) {
+              return next(error);
+            } else {
+              return res.redirect('/');
+            }
+          });
+        } else {
+          return res.send('All fields required');
+        }
+        }
+      }
+    });
 });
 

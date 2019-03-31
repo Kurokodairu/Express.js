@@ -1,18 +1,18 @@
 #navbar .pageName {
 	font-weight: bold;
 	font-size:26px;
-	padding-left:15px;
-	padding-top:8px;
-	padding-bottom:3px;
+  padding-top:7px;
+  padding-bottom:0px;
 }
 
 #navbar {
 	overflow: hidden;
-    background-color: #333;
-    position: sticky;
-    top: 0;
-	margin-bottom:50px;
-	font-size:18px;
+  background-color: #333;
+  position: sticky;
+  top: 0;
+	margin-bottom:25px;
+  font-size: 18px;
+  min-width: 500px;;
 }
 
 #navbar a {
@@ -20,7 +20,7 @@
   display: block;
   color: white;
   text-align: center;
-  padding: 10px 15px;
+  padding: 12px 15px;
   text-decoration: none;
 }
 
@@ -28,4 +28,8 @@
 /* Right-aligned link */
 #navbar a.right {
   float: right;
+}
+
+.post {
+  background-color: #3469e5;
 }
