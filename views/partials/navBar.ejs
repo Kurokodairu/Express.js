@@ -1,11 +1,11 @@
 <link type="text/css" rel="stylesheet" href="/css/navBar.css">
 
 <div id="navbar">
-		<a class="pageName" href="#"> Kurokodairu </a>
+		<a class="pageName" href="/settings"> Kurokodairu </a>
 		<% if (user === false) { %>
 			<a class="right" href="/auth"> Login </a>
 		<% } else { %>
-			<a href="#"><%= user.username %></a>
+			<a href="/profile"><%= user.username %></a>
 			<a class="right" href="/logout"> Logout </a>
 			<a class="right post" href="/Post"> Post </a>
 		<% } %>

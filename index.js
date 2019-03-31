@@ -94,6 +94,21 @@ app.get('/Post', function (req, res, next) {
   });
 });
 
+app.get('/settings', function (req, res, next) {
+  User.findById(req.session.userId)
+  .exec(function (error, user) {
+    if (error) {
+      return next(error);
+    } else {
+      if (user === null) {
+        return res.redirect('/');
+      } else {
+        return res.render('pages/settings/index.ejs');
+      }
+    }
+  });
+});
+
 
 
 // ----------------------------------------------------------------
@@ -126,7 +141,7 @@ app.post('/', function (req, res, next) {
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
-      pictureURL: req.body.picture || null,
+      pictureURL: req.body.picture || '/default.png',
     }
 
     User.create(userData, function (error, user) {
@@ -208,6 +223,18 @@ app.get('/profile/:id', (req, res, next) => {
   .catch(err => {
       console.log(err);
   });
+});
+
+app.post('/newPic', function (req, res, next) {
+if (req.body.newPic) {
+  console.log(req.body.newPic)
+  User.findByIdAndUpdate(req.session.userId, { pictureURL: req.body.newPic }, {new:true});
+  res.redirect('/profile');
+
+} else {
+  return res.send('Nothing Changed.');
+}
+
 });
 
 
