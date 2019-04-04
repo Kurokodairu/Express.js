@@ -6,7 +6,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
 const moment = require('moment');
-const port = 3000;
+const port = 80;
 
 
 // Using EJS as Template Files. https://ejs.co 
@@ -14,7 +14,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/static'));
 app.set('trust proxy', true);
 
-app.listen(port, '127.0.0.1', () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, '192.168.0.30', () => console.log(`App listening on port ${port}! `));
 
 
 
@@ -225,9 +225,10 @@ app.get('/profile/:id', (req, res, next) => {
   });
 });
 
+// W.I.P
 app.post('/newPic', function (req, res, next) {
 if (req.body.newPic) {
-  console.log(req.body.newPic)
+
   User.findByIdAndUpdate(req.session.userId, { pictureURL: req.body.newPic }, {new:true});
   res.redirect('/profile');
 
