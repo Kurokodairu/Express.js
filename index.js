@@ -1,12 +1,17 @@
 const express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
+
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
 var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+
 require('dotenv').config();
 const moment = require('moment');
-const port = 80;
+const port = 3000;
 
 
 // Using EJS as Template Files. https://ejs.co 
@@ -14,9 +19,10 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/static'));
 app.set('trust proxy', true);
 
-app.listen(port, '192.168.0.30', () => console.log(`App listening on port ${port}! `));
 
+// app.listen(port, '0.0.0.0', () => console.log(`App listening on port ${port}! `));
 
+server.listen(port, () => console.log(`Server started on port ${port}`));
 
 // ----------------------------------------------------------------
 // ESTABLISH A CONNECTION TO THE MONGO DATABASE
@@ -109,6 +115,17 @@ app.get('/settings', function (req, res, next) {
   });
 });
 
+function onConnection(socket){
+  socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
+  console.log("connected");
+}
+
+io.on('connection', onConnection);
+
+app.get('/experiment', function (req, res, next) {
+  res.render('pages/exp/index.ejs');
+
+});
 
 
 // ----------------------------------------------------------------
