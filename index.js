@@ -115,12 +115,11 @@ app.get('/settings', function (req, res, next) {
   });
 });
 
-function onConnection(socket){
-  socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
-  console.log("connected");
-}
-
-io.on('connection', onConnection);
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+});
 
 app.get('/experiment', function (req, res, next) {
   res.render('pages/exp/index.ejs');
