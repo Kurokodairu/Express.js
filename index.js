@@ -22,7 +22,7 @@ app.set('trust proxy', true);
 
 // app.listen(port, '0.0.0.0', () => console.log(`App listening on port ${port}! `));
 
-server.listen(port, () => console.log(`Server started on port ${port}`));
+server.listen(port, '127.0.0.1', () => console.log(`Server started on port ${port}`));
 
 // ----------------------------------------------------------------
 // ESTABLISH A CONNECTION TO THE MONGO DATABASE
