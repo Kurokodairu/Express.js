@@ -11,7 +11,7 @@ var MongoStore = require('connect-mongo')(session);
 
 require('dotenv').config();
 const moment = require('moment');
-const port = 3000;
+const port = 80;
 
 
 // Using EJS as Template Files. https://ejs.co 
@@ -20,9 +20,8 @@ app.use(express.static(__dirname + '/static'));
 app.set('trust proxy', true);
 
 
-// app.listen(port, '0.0.0.0', () => console.log(`App listening on port ${port}! `));
 
-server.listen(port, '127.0.0.1', () => console.log(`Server started on port ${port}`));
+server.listen(port, '0.0.0.0', () => console.log(`Server started on port ${port}`));
 
 // ----------------------------------------------------------------
 // ESTABLISH A CONNECTION TO THE MONGO DATABASE
@@ -92,9 +91,13 @@ app.get('/Post', function (req, res, next) {
       return next(error);
     } else {
       if (user === null) {
-        return res.redirect('/');
+        msg.find({}, function(err, x) {
+        return res.redirect('/', {user: false});
+        });
       } else {
-        res.render('pages/Messages/send.ejs');
+        msg.find({}, function(err, x) {
+        res.render('pages/Messages/send.ejs', {user: user});
+        });
       }
     }
   });

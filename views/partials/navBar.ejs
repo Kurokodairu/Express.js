@@ -1,4 +1,5 @@
 <link type="text/css" rel="stylesheet" href="/css/navBar.css">
+<script src="/scripts/navbar.js"></script>
 
 <div id="navbar">
 		<a class="pageName" href="/settings"> Kurokodairu </a>
@@ -6,7 +7,8 @@
 			<a class="right" href="/auth"> Login </a>
 		<% } else { %>
 			<a href="/profile"><%= user.username %></a>
-			<a class="right" href="/logout"> Logout </a>
-			<a class="right post" href="/Post"> Post </a>
+			<a class="right logout" href="/logout"> Logout </a>
 		<% } %>
+			<a class="right post" id="postbtn" href="/Post"> Post </a>
+
 	</div>

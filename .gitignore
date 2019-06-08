@@ -2,6 +2,6 @@
 
 *.git
 
-ngrok.exe
-
 .env
+
+.vscode

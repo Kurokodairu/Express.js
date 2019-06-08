@@ -33,3 +33,12 @@
 .post {
   background-color: #3469e5;
 }
+
+.messages {
+  background-color: black;
+}
+
+.logout:hover  {
+  background-color: black;
+  color: #333;
+}
